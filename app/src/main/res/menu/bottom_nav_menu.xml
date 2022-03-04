@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/Watchlist"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Watchlist" />
+
+    <item
+        android:id="@+id/Market"
+        android:icon="@drawable/ic_baseline_bar_chart_24"
+        android:title="Market" />
+
+    <item
+        android:id="@+id/Portfolio"
+        android:icon="@drawable/ic_baseline_business_center_24"
+        android:title="Portfolio" />
+
+</menu>

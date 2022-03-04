@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">StockMarketTests</string>
+    <string name="fetch">Fetch</string>
+
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_watchlist">Watchlist</string>
+    <string name="title_market">Market</string>
+    <string name="title_portfolio">Portfolio</string>
+</resources>
