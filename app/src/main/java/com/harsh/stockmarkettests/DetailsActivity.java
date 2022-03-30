@@ -13,6 +13,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,10 +33,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DetailsActivity extends AppCompatActivity {
 
     public static final String PRICE_URL = "https://money.rediff.com/money1/currentstatus.php?companycode=";
+    public static final int AUTO_REFRESH_PERIOD_MSEC = 5000;
     TextView tvStockName, tvStockChange, tvStockChangePercent,tvstockprice,
             tvlow,tvhigh,tvprevclose,tvmarketcap,tvvolume,tv52weekhigh, tv52weeklow;
     ToggleButton toggleButton;
@@ -43,6 +48,8 @@ public class DetailsActivity extends AppCompatActivity {
     Button tradebutton;
     String ticker, tickerName;
     SharedPreferences localstorage;
+    Timer timer;
+    int counter;
 
 
     @Override
@@ -113,20 +120,51 @@ public class DetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 BottomSheetDialogFragment bottomSheetDialogFragment = new bottom_sheet_trade();
                 bottomSheetDialogFragment.show(getSupportFragmentManager(),bottomSheetDialogFragment.getTag());
-
-                //Sending data to fragments
-                String finalchange = tvStockChange.getText().toString() + " " + tvStockChangePercent.getText().toString();
-
                 dataViewModel.setBottomSheetDialogFragment(bottomSheetDialogFragment);
                 dataViewModel.setTicker(ticker);
+                String finalchange = tvStockChange.getText().toString() + " " + tvStockChangePercent.getText().toString();
                 dataViewModel.setTickerprice(tvstockprice.getText().toString());
                 dataViewModel.setTickerpricechange(finalchange);
+                tvstockprice.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        String finalchange = tvStockChange.getText().toString() + " " + tvStockChangePercent.getText().toString();
+                        dataViewModel.setTickerprice(tvstockprice.getText().toString());
+                        dataViewModel.setTickerpricechange(finalchange);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+
 
             }
         });
 
+        timer = new Timer();
+        counter = 0;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                makeApiCallPrice(ticker);
+            }
+        }, 0, AUTO_REFRESH_PERIOD_MSEC);
+
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+    }
 
     private void makeApiCallPrice(String ticker) {
 
@@ -257,7 +295,7 @@ public class DetailsActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     }
+
 }

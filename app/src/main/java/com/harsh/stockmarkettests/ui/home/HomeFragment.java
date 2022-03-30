@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
 
     private static final int TRIGGER_AUTO_COMPLETE = 100;
     private static final long AUTO_COMPLETE_DELAY = 300;
-    private static final long AUTO_REFRESH_PERIOD_MSEC = 3000;
+    private static final long AUTO_REFRESH_PERIOD_MSEC = 10000;
 
     public static final String EXTRA_TICKER = "com.harsh.stockmarkettest.MESSAGE";
     public static final String EXTRA_TICKERNAME = "com.harsh.stockmarkettest.TICKERNAME";
@@ -92,6 +92,7 @@ public class HomeFragment extends Fragment {
     Handler handler;
     private Runnable myrunnable;
     SharedPreferences localstorage;
+    List<stock> stockList1;
     LocalStorage share_pref;
     Timer timer;
     int counter;
@@ -113,75 +114,59 @@ public class HomeFragment extends Fragment {
         stockList = new ArrayList<>();
         isSelectedFromList = false;
         stockurls = new ArrayList<>();
-       // stockurls = share_pref.getWatchlistStocks();
+        share_pref = new LocalStorage(getContext());
+        stockList1 = new ArrayList<>();
+        stockList1 = share_pref.getWatchlistStocks();
+
+       for(int i=0; i < stockList1.size(); i++)
+       {
+           stockurls.add(stockList1.get(i).getTicker());
+       }
+
+
+        recyclerView = root.findViewById(R.id.recylerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recylerAdapter = new RecylerAdapter(stockList1);
+        recyclerView.setAdapter(recylerAdapter);
 
         localstorage = getContext().getSharedPreferences("Stocks", Context.MODE_PRIVATE);
         String watchlist = localstorage.getString("WATCHLIST", null);
         if(watchlist != null)
         {
-            try {
-                JSONArray jsonArray = new JSONArray(watchlist);
-                for(int i=0; i < jsonArray.length(); i++)
-                {
-                   stockurls.add(jsonArray.getString(i));
-                }
-            }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
-
+            for(int i=0; i < stockurls.size(); i++)
+                makeApiCallPrice(stockurls.get(i), i);
         }
         else
         {
             //TODO :-
-            // Here you can show some pichtures of like there is no any data you can add throgh by searching
+            // Here you can show some pichtures of like there is no any data you can add through searching
             SharedPreferences.Editor editor = localstorage.edit();
             editor.putString("WATCHLIST","[]");
             editor.apply();
         }
 
-
          makeCallApiIndex(PRICE_NIFTY);
          makeCallApiIndex(PRICE_SENSEX);
         //TODO;- this is temporary
 
-        for(int i=0; i < stockurls.size(); i++)
-        {
-            makeApiCallPrice(stockurls.get(i));
-
-        }
-
-
-
-        recyclerView = root.findViewById(R.id.recylerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recylerAdapter = new RecylerAdapter(stockList);
-        recyclerView.setAdapter(recylerAdapter);
-
-        /*
         timer = new Timer();
         counter = 0;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                // do your task here
-                UpdateGUI();
-
+                updatePrice();
             }
         }, 0, AUTO_REFRESH_PERIOD_MSEC);
 
-
-         */
         return root;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        timer.cancel();
         binding = null;
     }
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -312,10 +297,11 @@ public class HomeFragment extends Fragment {
         intent.putExtra(EXTRA_TICKER, ticker);
         intent.putExtra(EXTRA_TICKERNAME, tickerName);
         startActivity(intent);
+        timer.cancel();
 
 
     }
-    public void makeApiCallPrice(String ticker)
+    public void makeApiCallPrice(String ticker, int position)
     {
         ApiCall.make(getContext(), ticker, PRICE_URL, new Response.Listener<String>() {
             @Override
@@ -333,10 +319,11 @@ public class HomeFragment extends Fragment {
                     String change = jsonObject.getString("Change");
                     String changeinPercent = jsonObject.getString("ChangePercent");
                     String finalchange = change + " (" + changeinPercent + "%)";
-                    stock st = new stock(lastprice, ticker, finalchange);
-
-                    stockList.add(st);
-                    recylerAdapter.notifyItemInserted(stockList.size()-1);
+                    stockList1.get(position).setLastprice(lastprice);
+                    stockList1.get(position).setChange(finalchange);
+                   // stockList1.get(position).setTicker(ticker);
+                    recylerAdapter.notifyItemChanged(position);
+                    //recylerAdapter.notifyItemInserted(stockList.size()-1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -386,7 +373,6 @@ public class HomeFragment extends Fragment {
                             tv_niftychange.setTextColor(getResources().getColor(R.color.red_stock));
                             tv_niftychange.setText(finalchange + "  ("+ finalchangeinpercent + "%)");
                         }
-
                     }
                     else
                     {
@@ -405,7 +391,6 @@ public class HomeFragment extends Fragment {
                             }
                     }
 
-
                 } catch (JSONException e) {
                     Toast.makeText(getContext(), "Somethings problem in parsing", Toast.LENGTH_SHORT).show();
                     Log.d("Parse", e.toString());
@@ -422,9 +407,13 @@ public class HomeFragment extends Fragment {
 
     public void updatePrice()
     {
-
+        for(int i = 0; i < stockList1.size(); i++)
+        {
+            makeApiCallPrice(stockList1.get(i).getTicker(), i);
+        }
+        makeCallApiIndex(PRICE_SENSEX);
+        makeCallApiIndex(PRICE_NIFTY);
     }
-
 
 }
 

@@ -13,6 +13,18 @@ public class stock {
         this.change= change;
     }
 
+    public void setLastprice(String lastprice) {
+        this.lastprice = lastprice;
+    }
+
+    public void setTicker(String ticker) {
+        this.ticker = ticker;
+    }
+
+    public void setChange(String change) {
+        this.change = change;
+    }
+
     public String getLastprice() {
         return lastprice;
     }
