@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import com.android.volley.VolleyError;
 import com.harsh.stockmarkettests.ApiCall;
 import com.harsh.stockmarkettests.AutoSuggestAdapter;
 import com.harsh.stockmarkettests.DetailsActivity;
+import com.harsh.stockmarkettests.LocalStorage;
 import com.harsh.stockmarkettests.MainActivity;
 import com.harsh.stockmarkettests.R;
 import com.harsh.stockmarkettests.RecylerAdapter;
@@ -62,12 +64,14 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HomeFragment extends Fragment {
 
     private static final int TRIGGER_AUTO_COMPLETE = 100;
     private static final long AUTO_COMPLETE_DELAY = 300;
-    private static final long AUTO_REFRESH_PERIOD_MSEC = 15000;
+    private static final long AUTO_REFRESH_PERIOD_MSEC = 3000;
 
     public static final String EXTRA_TICKER = "com.harsh.stockmarkettest.MESSAGE";
     public static final String EXTRA_TICKERNAME = "com.harsh.stockmarkettest.TICKERNAME";
@@ -87,6 +91,10 @@ public class HomeFragment extends Fragment {
     private boolean isSelectedFromList;
     Handler handler;
     private Runnable myrunnable;
+    SharedPreferences localstorage;
+    LocalStorage share_pref;
+    Timer timer;
+    int counter;
     TextView tv_sensex, tv_sensexchange, tv_nifty, tv_niftychange;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -104,28 +112,35 @@ public class HomeFragment extends Fragment {
 
         stockList = new ArrayList<>();
         isSelectedFromList = false;
-
         stockurls = new ArrayList<>();
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=INFY");
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=HCLTECH");
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=GAIL");
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=TCS");
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=IDEA");
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=TATAMOTORS");
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=SUZLON");
-        stockurls.add("https://money.rediff.com/money1/currentstatus.php?companycode=SUNPHARMA");
+       // stockurls = share_pref.getWatchlistStocks();
 
-        String[] tickers = new String[8];
-        tickers[0] = "INFY";
-        tickers[1] = "HCLTECH";
-        tickers[2] = "GAIL";
-        tickers[3] = "TCS";
-        tickers[4] = "IDEA";
-        tickers[5] = "TATAMOTORS";
-        tickers[6] = "SUZLON";
-        tickers[7] = "SUNPHARMA";
+        localstorage = getContext().getSharedPreferences("Stocks", Context.MODE_PRIVATE);
+        String watchlist = localstorage.getString("WATCHLIST", null);
+        if(watchlist != null)
+        {
+            try {
+                JSONArray jsonArray = new JSONArray(watchlist);
+                for(int i=0; i < jsonArray.length(); i++)
+                {
+                   stockurls.add(jsonArray.getString(i));
+                }
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
 
-        //new JsonTask().execute(stockurls);
+        }
+        else
+        {
+            //TODO :-
+            // Here you can show some pichtures of like there is no any data you can add throgh by searching
+            SharedPreferences.Editor editor = localstorage.edit();
+            editor.putString("WATCHLIST","[]");
+            editor.apply();
+        }
+
 
          makeCallApiIndex(PRICE_NIFTY);
          makeCallApiIndex(PRICE_SENSEX);
@@ -133,17 +148,31 @@ public class HomeFragment extends Fragment {
 
         for(int i=0; i < stockurls.size(); i++)
         {
-            makeApiCallPrice(tickers[i]);
+            makeApiCallPrice(stockurls.get(i));
 
         }
+
+
 
         recyclerView = root.findViewById(R.id.recylerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recylerAdapter = new RecylerAdapter(stockList);
         recyclerView.setAdapter(recylerAdapter);
 
+        /*
+        timer = new Timer();
+        counter = 0;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // do your task here
+                UpdateGUI();
+
+            }
+        }, 0, AUTO_REFRESH_PERIOD_MSEC);
 
 
+         */
         return root;
     }
 
@@ -152,17 +181,6 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
-
-    /*
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
-    }
-
-
-     */
 
 
     @Override
@@ -205,6 +223,7 @@ public class HomeFragment extends Fragment {
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (!isSelectedFromList){
@@ -317,7 +336,7 @@ public class HomeFragment extends Fragment {
                     stock st = new stock(lastprice, ticker, finalchange);
 
                     stockList.add(st);
-                    recylerAdapter.notifyDataSetChanged();
+                    recylerAdapter.notifyItemInserted(stockList.size()-1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -401,84 +420,11 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    //This method is for backup option for now its no use
-    public class JsonTask extends AsyncTask<List<String>, String, List<stock>> {
+    public void updatePrice()
+    {
 
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            pd = new ProgressDialog(getActivity());
-            pd.setMessage("Please wait");
-            pd.setCancelable(true);
-            pd.show();
-
-
-        }
-
-        protected List<stock> doInBackground(List<String>... params) {
-
-            List<stock> stockls = new ArrayList<>();
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-
-            for(int i = 0; i < params[0].size(); i++)
-            {
-                try {
-                    URL url = new URL(params[0].get(i));
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-
-
-                    InputStream stream = connection.getInputStream();
-
-                    reader = new BufferedReader(new InputStreamReader(stream));
-
-                    StringBuffer buffe = new StringBuffer();
-                    String line = "";
-
-                    while ((line = reader.readLine()) != null) {
-                        buffe.append(line + "\n");
-                        Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
-
-                    }
-
-                    JSONObject jsonObject = new JSONObject(buffe.toString());
-                    String price = jsonObject.getString("LastTradedPrice");
-                    String ticker = params[0].get(i).substring(params[0].get(i).lastIndexOf("=")+ 1);
-                    String change = jsonObject.getString("Change");
-                    String changepercent = jsonObject.getString("ChangePercent");
-                    String finalchange = change + " (" + changepercent + "%)";
-                    stock st = new stock(price, ticker, finalchange);
-                    stockls.add(st);
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return stockls;
-        }
-
-        @Override
-        protected void onPostExecute(List<stock> result) {
-            super.onPostExecute(result);
-            if(pd.isShowing())
-                pd.dismiss();
-
-            for(int i=0; i < result.size(); i++)
-            {
-                stockList.add(result.get(i));
-                recylerAdapter.notifyDataSetChanged();
-            }
-
-
-        }
     }
+
 
 }
 

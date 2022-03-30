@@ -58,13 +58,11 @@
             <LinearLayout
                 android:id="@+id/linearLayout2"
                 android:layout_width="349dp"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="31dp"
-                android:layout_marginLeft="31dp"
-                android:layout_marginTop="19dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="31dp"
-                android:layout_marginRight="31dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/customborder"
                 android:orientation="horizontal"
@@ -87,6 +85,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-black"
                         android:gravity="center|center_horizontal|center_vertical"
+                        android:padding="10dp"
                         android:text="Low"
                         android:textColor="#FFFFFF" />
 
@@ -97,6 +96,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-black"
                         android:gravity="center|center_horizontal|center_vertical"
+                        android:padding="10dp"
                         android:text="0"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
@@ -114,6 +114,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-black"
                         android:gravity="center|center_horizontal|center_vertical"
+                        android:padding="10dp"
                         android:text="High"
                         android:textColor="#FFFFFF" />
 
@@ -124,6 +125,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-black"
                         android:gravity="center|center_horizontal|center_vertical"
+                        android:padding="10dp"
                         android:text="0"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
@@ -141,6 +143,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-black"
                         android:gravity="center|center_horizontal|center_vertical"
+                        android:padding="10dp"
                         android:text="Prev. close"
                         android:textColor="#FFFFFF" />
 
@@ -151,6 +154,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-black"
                         android:gravity="center|center_horizontal|center_vertical"
+                        android:padding="10dp"
                         android:text="0"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
@@ -183,7 +187,7 @@
                 android:layout_height="250dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginLeft="32dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/customborder"
@@ -210,7 +214,7 @@
                         android:drawablePadding="10dp"
                         android:fontFamily="sans-serif-black"
                         android:gravity="start|center_vertical"
-                        android:text="Market cap"
+                        android:text="Turnover"
                         android:textColor="#FFFFFF" />
 
                     <TextView
@@ -329,7 +333,7 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginTop="36dp"
                         android:fontFamily="sans-serif-black"
-                        android:text="Infosys Private Ltd."
+                        android:text="Company Name"
                         android:textColor="#8E8E8E"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toTopOf="@+id/tv_stockPrice"
@@ -341,10 +345,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
-                        android:layout_marginLeft="24dp"
                         android:layout_marginTop="1dp"
                         android:fontFamily="sans-serif-black"
-                        android:text="₹ 1,723.45"
+                        android:text="Stock Price"
                         android:textColor="#DF6A72"
                         android:textSize="24sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -356,7 +359,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:fontFamily="sans-serif-black"
-                        android:text="(0.24%)"
+                        android:text="change in percent"
                         android:textColor="#FFDF6A72"
                         app:layout_constraintBaseline_toBaselineOf="@+id/tv_details_stock_change"
                         app:layout_constraintStart_toEndOf="@+id/tv_details_stock_change" />
@@ -366,42 +369,53 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
-                        android:layout_marginLeft="24dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="sans-serif-black"
-                        android:text="-₹12.48"
+                        android:text="price change"
                         android:textColor="#DF6A72"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_stockPrice" />
 
-                    <ImageView
-                        android:id="@+id/ivstartblank"
-                        android:layout_width="42dp"
-                        android:layout_height="34dp"
-                        android:layout_marginTop="53dp"
-                        android:layout_marginEnd="34dp"
-                        android:layout_marginBottom="26dp"
-                        android:tag="star_border"
+
+                    <ToggleButton
+                        android:id="@+id/toggleButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="32dp"
+                        android:background="@drawable/star_button"
+                        android:checked="false"
+                        android:text="ToggleButton"
+                        android:textOff=""
+                        android:textOn=""
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_baseline_star_border_24" />
+                        app:layout_constraintVertical_bias="0.702" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/button"
-                style="@style/TextAppearance.AppCompat.Widget.Button"
-                android:layout_width="189dp"
-                android:layout_height="54dp"
-                android:layout_marginTop="32dp"
+                android:id="@+id/trade_btn"
+                android:layout_width="250dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="24dp"
                 android:backgroundTint="@color/blue"
+                android:fontFamily="sans-serif-black"
+                android:shadowColor="#834141"
                 android:text="Trade"
+                android:textColor="#070707"
+                android:textSize="20sp"
+                android:visibility="visible"
+                app:cornerRadius="30px"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+                app:layout_constraintVertical_bias="0.051"
+                app:strokeWidth="2px" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -10,4 +10,7 @@
     <color name="blue">#3C79F5</color>
     <color name="green_stock">#55AA14</color>
     <color name="red_stock">#F0616C</color>
+    <color name="background_grey">#141519</color>
+    <color name="default_slider_color">#3C79F5</color>
+    <color name="grey">#8D919F</color>
 </resources>

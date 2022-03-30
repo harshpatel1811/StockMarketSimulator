@@ -2,6 +2,9 @@ package com.harsh.stockmarkettests;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,25 +20,30 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.android.volley.Response;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.harsh.stockmarkettests.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
 public class DetailsActivity extends AppCompatActivity {
 
     public static final String PRICE_URL = "https://money.rediff.com/money1/currentstatus.php?companycode=";
     TextView tvStockName, tvStockChange, tvStockChangePercent,tvstockprice,
             tvlow,tvhigh,tvprevclose,tvmarketcap,tvvolume,tv52weekhigh, tv52weeklow;
-    ImageView ivstartblank;
+    ToggleButton toggleButton;
     ProgressBar progressBar;
     NestedScrollView nestedScrollView;
     Button tradebutton;
     String ticker, tickerName;
     SharedPreferences localstorage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +51,13 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
         //Getting String from search query
+        DataViewModel dataViewModel = new ViewModelProvider(this).get(DataViewModel.class);
+
         Intent intent = getIntent();
         ticker = intent.getStringExtra(HomeFragment.EXTRA_TICKER);
         tickerName = intent.getStringExtra(HomeFragment.EXTRA_TICKERNAME);
         setTitle(ticker);
+        tradebutton = findViewById(R.id.trade_btn);
         progressBar = findViewById(R.id.progressBar2);
         nestedScrollView = findViewById(R.id.nestedScrollView);
         tvStockName = findViewById(R.id.tv_stockname);
@@ -60,7 +71,17 @@ public class DetailsActivity extends AppCompatActivity {
         tvvolume = findViewById(R.id.tv_volume);
         tv52weekhigh = findViewById(R.id.tv_52weekhigh);
         tv52weeklow = findViewById(R.id.tv_52weeklow);
-        ivstartblank = findViewById(R.id.ivstartblank);
+       // ivstarblank = findViewById(R.id.ivstartblank);
+        toggleButton = findViewById(R.id.toggleButton);
+
+
+        File file = new File("/data/data/com.harsh.stockmarkettests/shared_prefs/Stocks.xml");
+        if(!file.exists())
+        {
+            localstorage = getSharedPreferences("Stocks", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = localstorage.edit();
+            editor.putString("WATCHLIST","[]");
+        }
 
         nestedScrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -68,19 +89,38 @@ public class DetailsActivity extends AppCompatActivity {
         makeApiCallPrice(ticker);
 
         if(istickerexist(ticker))
-            ivstartblank.setImageResource(R.drawable.ic_baseline_star_rate_24);
+            toggleButton.toggle();
 
-        //  700005  700002
-        ivstartblank.setOnClickListener(new View.OnClickListener() {
 
-            Drawable star_border = getResources().getDrawable( R.drawable.ic_baseline_star_border_24);
-            Drawable start_filled = getResources().getDrawable(R.drawable.ic_baseline_star_rate_24);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             if(ivstartblank.getDrawable().getConstantState().equals(star_border.getConstantState()))
-                 ivstartblank.setImageResource(R.drawable.ic_baseline_star_rate_24);
-             else
-                 ivstartblank.setImageResource(R.drawable.ic_baseline_star_border_24);
+               if(toggleButton.isChecked())
+               {
+                   Toast.makeText(DetailsActivity.this, "Added to Favourited", Toast.LENGTH_SHORT).show();
+                   addToWatchlist(ticker);
+               }
+               else
+               {
+                   Toast.makeText(DetailsActivity.this, "Removed from favourites", Toast.LENGTH_SHORT).show();
+                   removeFromWatchlist(ticker);
+               }
+            }
+        });
+
+        tradebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetDialogFragment bottomSheetDialogFragment = new bottom_sheet_trade();
+                bottomSheetDialogFragment.show(getSupportFragmentManager(),bottomSheetDialogFragment.getTag());
+
+                //Sending data to fragments
+                String finalchange = tvStockChange.getText().toString() + " " + tvStockChangePercent.getText().toString();
+
+                dataViewModel.setBottomSheetDialogFragment(bottomSheetDialogFragment);
+                dataViewModel.setTicker(ticker);
+                dataViewModel.setTickerprice(tvstockprice.getText().toString());
+                dataViewModel.setTickerpricechange(finalchange);
 
             }
         });
@@ -96,11 +136,6 @@ public class DetailsActivity extends AppCompatActivity {
 
                 try {
                     JSONObject row = new JSONObject(response);
-                    //  JSONArray array = responseObject.getJSONArray("results");
-                    //  Log.i("length:", "len: " + array.length());
-                    //   for (int i = 0; i < array.length(); i++) {
-                    //TODO:- Stock details here
-                    //  JSONObject row = array.getJSONObject(i);
                     String last = row.getString("LastTradedPrice");
                     String prevClose = row.getString("PrevClose");
                     String low = row.getString("Low");
@@ -117,7 +152,7 @@ public class DetailsActivity extends AppCompatActivity {
 
                     if(change.startsWith("-"))
                     {
-                        tvstockprice.setText("₹ "+last);
+                        tvstockprice.setText("₹"+last);
                         tvStockChange.setText(change);
                         tvStockChangePercent.setText("("+changepercent+"%)");
                     }
@@ -126,7 +161,7 @@ public class DetailsActivity extends AppCompatActivity {
                         tvstockprice.setTextColor(getResources().getColor(R.color.green_stock));
                         tvstockprice.setText("₹"+last);
                         tvStockChange.setTextColor(getResources().getColor(R.color.green_stock));
-                        tvStockChange.setText(change);
+                        tvStockChange.setText("+" + change);
                         tvStockChangePercent.setTextColor(getResources().getColor(R.color.green_stock));
                         tvStockChangePercent.setText("("+changepercent+"%)");
                     }
@@ -160,19 +195,69 @@ public class DetailsActivity extends AppCompatActivity {
         String data = localstorage.getString("WATCHLIST", null);
         if(data!= null)
         {
-            JSONArray jsonArray = null;
             try {
-                jsonArray = new JSONArray(data);
-                for(int i=0; i < jsonArray.length(); i++)
-                {
-                    if(jsonArray.get(i).equals(ticker))
-                        return true;
-                }
+           JSONArray jsonArray = new JSONArray(data);
+            for(int i = 0; i< jsonArray.length(); i++)
+            {
+                if(jsonArray.getString(i).equals(ticker))
+                    return true;
+            }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             return false;
         }
         return false;
+    }
+
+    public void addToWatchlist(String ticker)
+    {
+        Toast.makeText(this, "Running", Toast.LENGTH_SHORT).show();
+
+     //  localstorage = getSharedPreferences("Stocks", Context.MODE_PRIVATE);
+       SharedPreferences.Editor editor = localstorage.edit();
+       String data = localstorage.getString("WATCHLIST", null);
+
+       if(data != null)
+       {
+           try {
+               JSONArray jsonArray = new JSONArray(data);
+               jsonArray.put(ticker);
+               editor.putString("WATCHLIST", jsonArray.toString());
+               editor.apply();
+               //
+               // Toast.makeText(this, "Data added", Toast.LENGTH_SHORT).show();
+           } catch (JSONException e) {
+               Log.d("WATCHLIST", "addToWatchlist: "+ e.toString());
+               e.printStackTrace();
+           }
+       }
+       else
+           Toast.makeText(this, "Data Adding Failed", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void removeFromWatchlist(String ticker) {
+        SharedPreferences.Editor editor = localstorage.edit();
+        String data = localstorage.getString("WATCHLIST", null);
+        if(data!= null)
+        {
+            JSONArray jsonArray = null;
+            try {
+                jsonArray = new JSONArray(data);
+                for(int i=0; i < jsonArray.length(); i++)
+                {
+                    if(jsonArray.get(i).equals(ticker))
+                    {
+                        jsonArray.remove(i);
+                        editor.putString("WATCHLIST", jsonArray.toString());
+                        editor.apply();
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }

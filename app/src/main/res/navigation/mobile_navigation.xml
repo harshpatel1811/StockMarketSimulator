@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/Portfolio"
-        android:name="com.harsh.stockmarkettests.ui.notifications.NotificationsFragment"
+        android:name="com.harsh.stockmarkettests.ui.Portfolio.PortfolioSection"
         android:label="@string/title_portfolio"
         tools:layout="@layout/fragment_notifications" />
 </navigation>

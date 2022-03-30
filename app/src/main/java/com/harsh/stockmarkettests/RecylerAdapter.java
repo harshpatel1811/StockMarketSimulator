@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +57,8 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.myviewho
         if(change.startsWith("-"))
         {
             //holder.tvtickerprice.setTextColor(Color.parseColor("#F0616C"));
-            holder.tvtickerprice.setText("₹ "+tickerprice);
+            holder.iv_trending.setImageResource(R.drawable.ic_baseline_trending_down_24);
+            holder.tvtickerprice.setText("₹"+tickerprice);
             holder.tvticker.setText(ticker);
             holder.tvchange.setTextColor(Color.parseColor("#F0616C"));
             holder.tvchange.setText(change);
@@ -64,6 +66,7 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.myviewho
         else
         {
            // holder.tvtickerprice.setTextColor(Color.parseColor("#55AA14"));
+            holder.iv_trending.setImageResource(R.drawable.ic_baseline_trending_up_24);
             holder.tvtickerprice.setText("₹"+tickerprice);
             holder.tvticker.setText(ticker);
             holder.tvchange.setTextColor(Color.parseColor("#55AA14"));
@@ -81,6 +84,7 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.myviewho
     public class myviewholder extends RecyclerView.ViewHolder {
 
         private TextView tvticker, tvtickerprice, tvchange;
+        private ImageView iv_trending;
         public myviewholder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +101,10 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.myviewho
             tvticker = itemView.findViewById(R.id.tickername);
             tvtickerprice = itemView.findViewById(R.id.price);
             tvchange = itemView.findViewById(R.id.tv_change);
+            iv_trending = itemView.findViewById(R.id.iv_trending);
         }
     }
+
 
     //TODO:- This is left
     /*

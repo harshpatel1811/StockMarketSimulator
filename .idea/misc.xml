@@ -4,18 +4,29 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_dropdown_item_1line.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/drawable/custom_border_portfoliosection.xml" value="0.21213836669921876" />
+        <entry key="app/src/main/res/drawable/custom_seekbar.xml" value="0.149" />
         <entry key="app/src/main/res/drawable/custom_tradebutton.xml" value="0.251" />
         <entry key="app/src/main/res/drawable/customborder.xml" value="0.251" />
+        <entry key="app/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.2670540771484375" />
+        <entry key="app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_star_rate_24.xml" value="0.149" />
+        <entry key="app/src/main/res/drawable/ic_cancel_svgrepo_com.xml" value="0.1021279296875" />
         <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.262" />
         <entry key="app/src/main/res/drawable/recycler_border.xml" value="0.251" />
         <entry key="app/src/main/res/drawable/roundshape.xml" value="0.180571533203125" />
-        <entry key="app/src/main/res/layout/activity_details.xml" value="0.24072265625000003" />
+        <entry key="app/src/main/res/drawable/star_button.xml" value="0.149" />
+        <entry key="app/src/main/res/layout-v24/fragment_bottom_sheet_trade.xml" value="0.35505031252971286" />
+        <entry key="app/src/main/res/layout-v31/fragment_notifications.xml" value="0.2956924438476563" />
+        <entry key="app/src/main/res/layout/activity_details.xml" value="0.4714849739662535" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1900395711263021" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.4210235595703125" />
+        <entry key="app/src/main/res/layout/fragment_bottom_sheet_trade.xml" value="0.45670460231694576" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3259160359700521" />
-        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.5031578947368421" />
         <entry key="app/src/main/res/layout/itemlist.xml" value="0.6639851888020833" />
+        <entry key="app/src/main/res/layout/itemlist_portfolio.xml" value="0.36165618896484375" />
         <entry key="app/src/main/res/layout/row.xml" value="0.48511116383081004" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/menu/search_menu.xml" value="0.3098958333333333" />
@@ -28,5 +39,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.35505031252971286" />
+      </ProjectState>
+    </option>
   </component>
 </project>
