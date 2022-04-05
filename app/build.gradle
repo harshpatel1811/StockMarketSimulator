@@ -50,7 +50,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.github.angads25:toggle:1.1.0'
     implementation 'nl.bryanderidder:themed-toggle-button-group:1.4.1'
-
+    implementation 'io.github.h07000223:flycoTabLayout:3.0.0'
 
 }
 

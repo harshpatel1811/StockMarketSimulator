@@ -44,11 +44,6 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.myviewho
     @Override
     public void onBindViewHolder(@NonNull RecylerAdapter.myviewholder holder, int position) {
 
-        /*
-        String ticker = st.getTicker();
-        String tickerprice = st.getLastprice();
-        String change = st.getChange();
-         */
 
         String ticker = stockList.get(position).getTicker();
         String tickerprice = stockList.get(position).getLastprice();
@@ -93,7 +88,7 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.myviewho
                   //  Toast.makeText(itemView.getContext(),stockList.get(getLayoutPosition()).getTicker(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(itemView.getContext(), DetailsActivity.class);
                     intent.putExtra(EXTRA_TICKER ,tvticker.getText().toString());
-                    intent.putExtra(EXTRA_TICKERNAME, "UNknown");
+                    intent.putExtra(EXTRA_TICKERNAME, tvticker.getText().toString());
                     itemView.getContext().startActivity(intent);
 
                 }
@@ -105,18 +100,4 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.myviewho
         }
     }
 
-
-    //TODO:- This is left
-    /*
-    public void maketickername(String ticker, String url)
-    {
-       ApiCall.make(this, ticker, url, new Response.Listener<String>() {
-           @Override
-           public void onResponse(String response) {
-
-           }
-       });
-    }
-
-     */
 }

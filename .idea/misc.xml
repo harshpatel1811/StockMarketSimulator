@@ -22,9 +22,11 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1900395711263021" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.4210235595703125" />
         <entry key="app/src/main/res/layout/fragment_bottom_sheet_trade.xml" value="0.45670460231694576" />
-        <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.31576354878403273" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3259160359700521" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.5031578947368421" />
+        <entry key="app/src/main/res/layout/fragment_top_losers.xml" value="0.20436083796494228" />
+        <entry key="app/src/main/res/layout/fragment_top_movers.xml" value="0.2504851055430673" />
         <entry key="app/src/main/res/layout/itemlist.xml" value="0.6639851888020833" />
         <entry key="app/src/main/res/layout/itemlist_portfolio.xml" value="0.36165618896484375" />
         <entry key="app/src/main/res/layout/row.xml" value="0.48511116383081004" />

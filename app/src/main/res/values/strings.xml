@@ -9,4 +9,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pnl"><![CDATA[P&L]]></string>
+    <string-array name="Indices" >
+        <item>NIfty 50</item>
+        <item>Nifty Banks</item>
+        <item>Nifty Small Cap</item>
+        <item>Nifty Mid Cap</item>
+    </string-array>
 </resources>
