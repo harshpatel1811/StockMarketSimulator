@@ -93,11 +93,11 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/textView31"
+        android:id="@+id/tv_buyorsellqty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="112dp"
         android:fontFamily="sans-serif-black"
         android:text="Enter Quantity"
         android:textColor="@color/white"
@@ -109,8 +109,8 @@
         android:id="@+id/textView32"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="232dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="224dp"
+        android:layout_marginTop="112dp"
         android:fontFamily="sans-serif-black"
         android:text="Max Quantity"
         android:textColor="@color/white"
@@ -119,35 +119,93 @@
         app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
 
     <TextView
-        android:id="@+id/maxqty"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="280dp"
-        android:layout_marginTop="76dp"
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-black"
-        android:text="15"
-        android:textColor="@color/white"
+        android:text="Available fund"
+        android:textColor="@color/grey"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="19dp"
+        android:fontFamily="sans-serif-black"
+        android:text="You have"
+        android:textColor="@color/grey"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/maxqty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="0"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edittext_qty"
+        app:layout_constraintEnd_toEndOf="@+id/textView32"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="@+id/textView32"
+        app:layout_constraintTop_toTopOf="@+id/edittext_qty"
+        app:layout_constraintVertical_bias="0.38" />
+
+    <TextView
+        android:id="@+id/tv_available_fund"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="₹0.00"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toTopOf="@+id/textView6"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/tv_shares_qty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView21"
+        app:layout_constraintStart_toStartOf="@+id/tv_available_fund"
+        app:layout_constraintTop_toTopOf="@+id/textView21" />
 
     <EditText
         android:id="@+id/edittext_qty"
         android:layout_width="124dp"
         android:layout_height="48dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="1"
         android:inputType="numberSigned"
+        android:maxLength="6"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textColorHint="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="@+id/textView31"
-        app:layout_constraintStart_toStartOf="@+id/textView31"
-        app:layout_constraintTop_toBottomOf="@+id/textView31" />
+        app:layout_constraintEnd_toEndOf="@+id/tv_buyorsellqty"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tv_buyorsellqty"
+        app:layout_constraintTop_toBottomOf="@+id/tv_buyorsellqty" />
 
     <com.ncorti.slidetoact.SlideToActView
-        android:id="@+id/slidertoactview"
+        android:id="@+id/slidertoactview_portfolio"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"

@@ -2,6 +2,9 @@ package com.harsh.stockmarkettests;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,32 +13,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.harsh.stockmarkettests.ui.Portfolio.BottomSheetPortfolio;
+import com.harsh.stockmarkettests.ui.Portfolio.PortfolioSection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PortfolioRecyclerAdapter extends RecyclerView.Adapter<PortfolioRecyclerAdapter.PortfolioViewHolder>{
         Context ctx;
         private List<PortfolioStock> stockList;
 
+        Timer timer;
+
         public PortfolioRecyclerAdapter(List<PortfolioStock> stockList, Context ctx)
         {
             this.ctx = ctx;
             this.stockList = stockList;
-
         }
 
     public class PortfolioViewHolder extends RecyclerView.ViewHolder {
-         private TextView tickerPriceLTP,ticker,tickerPnL,tickerQTY, tickerAvgBuy, tickerPriceChange, tickerinvested;
+         private TextView tickerPriceLTP,ticker,tickerPnL,tickerQTY;
+         String tickerchange;
 
         public PortfolioViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -46,11 +60,22 @@ public class PortfolioRecyclerAdapter extends RecyclerView.Adapter<PortfolioRecy
             //tickerPriceChange = itemView.findViewById(R.id.tickerchange);
             tickerQTY = itemView.findViewById(R.id.tickerQTY);
             tickerPnL = itemView.findViewById(R.id.tickerchange);
+            tickerchange = null;
           //  tickerAvgBuy = itemView.findViewById(R.id.tickerBuyAvg);
            // tickerinvested = itemView.findViewById(R.id.tickerinvested);
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DataViewModel dataViewModel = new ViewModelProvider(((AppCompatActivity)ctx)).get(DataViewModel.class);
+                    BottomSheetDialogFragment bottomSheetDialogFragment = new BottomSheetPortfolio();
+                    bottomSheetDialogFragment.show(((AppCompatActivity)ctx).getSupportFragmentManager(),bottomSheetDialogFragment.getTag());
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Ticker", ticker.getText().toString());
+                    bundle.putInt("Position", getAdapterPosition());
+                    bottomSheetDialogFragment.setArguments(bundle);
+                }
+            });
         }
-
     }
     @NonNull
     @Override
@@ -76,6 +101,7 @@ public class PortfolioRecyclerAdapter extends RecyclerView.Adapter<PortfolioRecy
             holder.tickerQTY.setText(String.valueOf(tickerQTY));
             holder.tickerPriceLTP.setText("₹"+ tickerPriceLTP);
             holder.tickerPnL.setText(tickerPnL);
+            holder.tickerchange = tickerpricechange;
             NumberFormat myFormat = NumberFormat.getInstance();
             try {
                 Number number = myFormat.parse(holder.tickerPnL.getText().toString());

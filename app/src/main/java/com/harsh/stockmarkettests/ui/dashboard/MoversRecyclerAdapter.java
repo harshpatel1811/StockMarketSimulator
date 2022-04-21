@@ -18,14 +18,15 @@ import com.harsh.stockmarkettests.R;
 import com.harsh.stockmarkettests.RecylerAdapter;
 import com.harsh.stockmarkettests.ui.home.HomeFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoversRecyclerAdapter extends RecyclerView.Adapter<MoversRecyclerAdapter.MyViewHolder> {
     public static final String LOSERS_TICKER = "com.harsh.stockmarkettest.MESSAGE";
-    List<com.harsh.stockmarkettests.stock> stockList;
+    ArrayList<com.harsh.stockmarkettests.stock> stockList;
     Context ctx;
 
-    public MoversRecyclerAdapter(List<com.harsh.stockmarkettests.stock> stockList, Context ctx)
+    public MoversRecyclerAdapter(ArrayList<com.harsh.stockmarkettests.stock> stockList, Context ctx)
     {
         this.stockList = stockList;
         this.ctx = ctx;
@@ -91,5 +92,11 @@ public class MoversRecyclerAdapter extends RecyclerView.Adapter<MoversRecyclerAd
         public int getItemCount() {
             return stockList.size();
         }
+
+    public void clear() {
+        int size =stockList.size();
+        stockList.clear();
+        notifyItemRangeRemoved(0, size);
+    }
     }
 

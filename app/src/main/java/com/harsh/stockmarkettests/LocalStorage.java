@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.gms.common.util.SharedPreferencesUtils;
+import com.harsh.stockmarkettests.ui.Portfolio.PortfolioSection;
+import com.harsh.stockmarkettests.ui.dashboard.MoversRecyclerAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
-//LocalStorage Management for Portfolio and Funds
-
-// NumberFormat.getNumberInstance(Locale.FRANCE).parse("265,858")
-//NumberFormat.getNumberInstance(java.util.Locale.US).parse("265,858")
 public class LocalStorage {
 
     Context context;
@@ -181,4 +178,224 @@ public class LocalStorage {
         return stockList;
     }
 
+    public float getFundsvalue()
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
+          float fund = sharedPreferences.getFloat("Fund", -1);
+            if(fund != -1)
+                return fund;
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putFloat("Fund", 1000000);
+            editor.apply();
+            return  1000000;
+
+
+    }
+
+    public void modiftyFundsBuy(float amount) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
+        float fund = sharedPreferences.getFloat("Fund", -1);
+        if(fund != -1)
+        {
+            float remaning_balance = fund - amount;
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            Toast.makeText(context, String.valueOf(remaning_balance), Toast.LENGTH_SHORT).show();
+            editor.remove("Fund");
+            editor.putFloat("Fund", remaning_balance);
+            editor.apply();
+        }
+        else
+        {
+            Toast.makeText(context.getApplicationContext(), "Somethings wwrong with modiftyfund() function", Toast.LENGTH_SHORT).show();
+        }
+      //  Toast.makeText(context, "Funds modified", Toast.LENGTH_SHORT).show();
+    }
+
+    public void averagePrice(String scrip, double tickerprice, int qty)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
+        String str = sharedPreferences.getString("Stocks", null);
+        if(str != null)
+        {
+            try {
+                JSONArray jsonArray = new JSONArray(str);
+                JSONArray newJsonArray = new JSONArray();
+                for(int i=0; i < jsonArray.length(); i++)
+                {
+                    JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+
+                    if(jsonObject.getString("Ticker").equals(scrip))
+                    {
+                       int m_qty =jsonObject.getInt("QTY");
+                       String m_buyprice = jsonObject.getString("Buy Price").substring(1);
+                       Number number = NumberFormat.getNumberInstance().parse(m_buyprice);
+                       double prev_cost = number.doubleValue() * m_qty;
+                       int newqty = m_qty + qty;
+                       double new_cost = tickerprice * qty;
+                       double avg_price = (new_cost + prev_cost) / newqty;
+
+
+                       JSONObject newJsonObjet = new JSONObject();
+                       newJsonObjet.put("Ticker", scrip);
+                       newJsonObjet.put("QTY", newqty);
+                       newJsonObjet.put("Buy Price","₹" + String.format(Locale.ENGLISH, "%,.2f", avg_price));
+                       newJsonArray.put(newJsonObjet);
+                    }
+
+                    else
+                    {
+                        JSONObject newJsonObjet = new JSONObject();
+                        newJsonObjet.put("Ticker", jsonObject.getString("Ticker"));
+                        newJsonObjet.put("QTY", jsonObject.getInt("QTY"));
+                        newJsonObjet.put("Buy Price", jsonObject.getString("Buy Price"));
+                        newJsonArray.put(newJsonObjet);
+                    }
+                }
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.remove("Stocks");
+                editor.putString("Stocks", newJsonArray.toString());
+                editor.apply();
+
+            } catch (JSONException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Object[] getPortFolioData(String ticker)
+    {
+        Object object[] = new Object[3];
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
+        String str =  sharedPreferences.getString("Stocks", null);
+       if(str!= null)
+       {
+           try {
+               JSONArray jsonArray = new JSONArray(str);
+               for(int i=0; i < jsonArray.length(); i++)
+               {
+                   JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+                   if(jsonObject.getString("Ticker").equals(ticker))
+                   {
+                       object[0] = ticker;
+                       object[1] = jsonObject.getInt("QTY");
+                       object[2] = jsonObject.getString("Buy Price");
+                   }
+               }
+           } catch (JSONException e) {
+               e.printStackTrace();
+           }
+       }
+       else
+           Toast.makeText(context, "Something wrong with getportfoliodata() function", Toast.LENGTH_SHORT);
+
+       return object;
+    }
+
+
+    public void modiftyFundsSell(String ticker, int qty, float lastprice, int position) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String str = sharedPreferences.getString("Stocks", null);
+        float funds = sharedPreferences.getFloat("Fund", -1);
+        if(str!=null)
+        {
+            //sell
+            try {
+                JSONArray jsonArray = new JSONArray(str);
+                JSONArray jsonArrayNew = new JSONArray();
+               // Number number = NumberFormat.getNumberInstance().parse(lastprice.substring(1));
+                for(int i=0; i< jsonArray.length(); i++) {
+                    JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+                    JSONObject jsonObjectNew = new JSONObject();
+                    if (jsonObject.getString("Ticker").equals(ticker))
+                    {
+                        if (jsonObject.getInt("QTY") != qty)
+                        {
+                            //Sells less than total qty
+                            Number buy_price = NumberFormat.getNumberInstance().parse(jsonObject.getString("Buy Price").substring(1));
+                            int totalqty = jsonObject.getInt("QTY");
+                            float modifiedfund = qty * lastprice;
+                            jsonObjectNew.put("Ticker", ticker);
+                            jsonObjectNew.put("QTY", totalqty-qty);
+                            jsonObjectNew.put("Buy Price", jsonObject.getString("Buy Price"));
+                            editor.remove("Fund");
+                            editor.putFloat("Fund", funds + modifiedfund);
+                            editor.apply();
+                            jsonArrayNew.put(jsonObjectNew);
+                            PortfolioSection.stockList.get(i).setTickerQTY(totalqty-qty);
+                        }
+                        else
+                        {
+                            int totalqty = jsonObject.getInt("QTY");
+                            float modifiedfund = totalqty * lastprice;
+                            editor.remove("Fund");
+                            editor.putFloat("Fund", (funds + modifiedfund));
+                            editor.apply();
+                            PortfolioSection.stockList.remove(position);
+                        }
+                    }
+                    else
+                    {
+                        jsonObjectNew.put("Ticker", jsonObject.getString("Ticker"));
+                        jsonObjectNew.put("QTY", jsonObject.getInt("QTY"));
+                        jsonObjectNew.put("Buy Price", jsonObject.getString("Buy Price"));
+                        jsonArrayNew.put(jsonObjectNew);
+                    }
+                }
+                editor.remove("Stocks");
+                editor.putString("Stocks", jsonArrayNew.toString());
+                editor.apply();
+            } catch (JSONException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            Toast.makeText(context, "something wrong in modifyFundsSell()", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public int getQTY(String ticker)
+    {
+        int qty = 0;
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
+        String str = sharedPreferences.getString("Stocks", null);
+        if(str!= null)
+        {
+            JSONArray jsonArray = null;
+            try {
+                jsonArray = new JSONArray(str);
+                for(int i=0; i < jsonArray.length(); i++)
+                {
+                    JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+                    if(jsonObject.getString("Ticker").equals(ticker))
+                        return jsonObject.getInt("QTY");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return qty;
+    }
+
+    public int getTickerPosition(String ticker)  {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
+        String str = sharedPreferences.getString("Stocks", null);
+        JSONArray jsonArray = null;
+
+        try {
+            jsonArray = new JSONArray(str);
+            for(int i=0; i < jsonArray.length(); i++)
+            {
+                JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+                if(jsonObject.getString("Ticker").equals(ticker))
+                    return i;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+       return 0;
+    }
 }

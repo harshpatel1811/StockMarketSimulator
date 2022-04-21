@@ -33,7 +33,7 @@ public class TopLosers extends Fragment {
     private static final String url ="https://www1.nseindia.com/live_market/dynaContent/live_analysis/losers/niftyLosers1.json";
     RecyclerView recyclerView;
     MoversRecyclerAdapter moversRecyclerAdapter;
-    List<stock> stockList;
+    ArrayList<stock> stockList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,7 +44,8 @@ public class TopLosers extends Fragment {
         getTopGainers(url);
         recyclerView = root.findViewById(R.id.recyclerview_toploosers);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        MoversRecyclerAdapter moversRecyclerAdapter = new MoversRecyclerAdapter(stockList, getContext());
+      //  MoversRecyclerAdapter moversRecyclerAdapter = new MoversRecyclerAdapter(stockList, getContext());
+
         return  root;
 
     }
@@ -55,7 +56,6 @@ public class TopLosers extends Fragment {
             @Override
             public void onResponse(String response) {
                 try {
-
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("data");
                     for(int i=0; i < jsonArray.length(); i++)
@@ -63,8 +63,8 @@ public class TopLosers extends Fragment {
                         JSONObject jsonObject2 = new JSONObject(jsonArray.get(i).toString());
                         String tickerName = jsonObject2.getString("symbol");
                         String tickerltp = jsonObject2.getString("ltp");
-                        String tickerprev_close = jsonObject2.getString("previousPrice");
-                        String tickerper_change = jsonObject2.getString("netPrice");
+                        String tickerprev_close = jsonObject2.getString("previousPrice");  //previousPrice
+                        String tickerper_change = jsonObject2.getString("netPrice");  //netPrice
                         NumberFormat numberFormat = NumberFormat.getNumberInstance();
                         Number number = numberFormat.parse(tickerltp);
                         Number number1 = numberFormat.parse(tickerprev_close);
@@ -88,4 +88,5 @@ public class TopLosers extends Fragment {
             }
         });
     }
-}
+
+    }

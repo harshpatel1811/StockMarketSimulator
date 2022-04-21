@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/custom_border_portfoliosection"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +30,8 @@
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-black"
                 android:text="Total Investment"
-                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -41,13 +41,40 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="20dp"
                 android:fontFamily="sans-serif-black"
                 android:text="Current value"
-                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
                 android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Available fund"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="@+id/tv_investment"
+                app:layout_constraintTop_toBottomOf="@+id/totalinvestment" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Total returns %"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="@+id/textView7"
+                app:layout_constraintTop_toBottomOf="@+id/currentvalue" />
 
             <TextView
                 android:id="@+id/totalinvestment"
@@ -57,7 +84,7 @@
                 android:fontFamily="sans-serif-black"
                 android:maxLength="20"
                 android:maxLines="1"
-                android:text="TextView"
+                android:text="₹0.00"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="@+id/tv_investment"
@@ -69,17 +96,47 @@
                 android:id="@+id/currentvalue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="sans-serif-black"
                 android:maxLength="20"
                 android:maxLines="1"
-                android:text="TextView"
+                android:text="₹0.00"
                 android:textColor="@color/white"
                 android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="@+id/textView7"
-                app:layout_constraintHorizontal_bias="0.478"
                 app:layout_constraintStart_toStartOf="@+id/textView7"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+            <TextView
+                android:id="@+id/tv_funds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-black"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:text="textview"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView3"
+                app:layout_constraintStart_toStartOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+            <TextView
+                android:id="@+id/tv_total_return"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-black"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:text="0.00%"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView4"
+                app:layout_constraintHorizontal_bias="0.379"
+                app:layout_constraintStart_toStartOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
             <TextView
                 android:id="@+id/overallpnl"
@@ -94,7 +151,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:layout_constraintVertical_bias="0.448" />
 
             <TextView
                 android:id="@+id/textView"
@@ -114,23 +172,23 @@
                 android:id="@+id/divider"
                 android:layout_width="409dp"
                 android:layout_height="1dp"
-                android:layout_marginStart="1dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="1dp"
+                android:layout_marginTop="4dp"
                 android:foreground="@color/cardview_dark_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/totalinvestment" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_funds" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_portfolio"
         android:layout_width="0dp"
-        android:layout_height="639dp"
+        android:layout_height="0dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout" />

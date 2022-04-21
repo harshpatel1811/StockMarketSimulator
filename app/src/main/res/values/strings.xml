@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StockMarketTests</string>
+    <string name="app_name">Market Simualator</string>
     <string name="fetch">Fetch</string>
 
     <string name="title_activity_main2">MainActivity2</string>
@@ -9,7 +9,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pnl"><![CDATA[P&L]]></string>
-    <string-array name="Indices" >
+    <string name="totalpnl">Total P&amp;L</string>
+    <string-array name="Indices">
         <item>NIfty 50</item>
         <item>Nifty Banks</item>
         <item>Nifty Small Cap</item>

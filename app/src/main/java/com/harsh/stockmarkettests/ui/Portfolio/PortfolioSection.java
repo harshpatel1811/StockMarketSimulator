@@ -1,5 +1,8 @@
 package com.harsh.stockmarkettests.ui.Portfolio;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,11 +13,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.android.gms.common.util.SharedPreferencesUtils;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.harsh.stockmarkettests.ApiCall;
 import com.harsh.stockmarkettests.LocalStorage;
 import com.harsh.stockmarkettests.PortfolioRecyclerAdapter;
@@ -38,18 +45,21 @@ import java.util.TimerTask;
 public class PortfolioSection extends Fragment {
     public static final String PRICE_URL = "https://money.rediff.com/money1/currentstatus.php?companycode=";
     public static final int AUTO_REFRESH_PERIOD_MSEC = 10000;
-    TextView current_value, total_invested, tvpnl;
-    public List<PortfolioStock> stockList;
+    public static TextView current_value, total_invested, tvpnl, tv_total_return, tv_funds;
+    public static List<PortfolioStock> stockList;
     RecyclerView recyclerView;
-    PortfolioRecyclerAdapter portfolioRecyclerAdapter;
+    static PortfolioRecyclerAdapter portfolioRecyclerAdapter;
     LocalStorage localStorage;
     ArrayList<Double> arrayList;
-    public double g_pnl = 0;
-    public double g_current_vlaue = 0;
-    public double g_total_value = 0;
+    public  double g_pnl = 0;
+    public  double g_current_vlaue = 0;
+    public  double g_total_value = 0;
+    public  double g_total_returns = 0;
     ArrayList<Double> pnlprice;
     ArrayList<Double> g_investment_value;
-    Timer timer;
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
+    public static float funds = 0;
+    public static Timer timer;
 
     private FragmentNotificationsBinding binding;
 
@@ -60,10 +70,12 @@ public class PortfolioSection extends Fragment {
         View view = binding.getRoot();
         total_invested  = view.findViewById(R.id.totalinvestment);
         current_value = view.findViewById(R.id.currentvalue);
+        tv_total_return =view.findViewById(R.id.tv_total_return);
         stockList = new ArrayList<>();
         localStorage = new LocalStorage(getContext());
         stockList = localStorage.getPortfolioStocks();
         tvpnl = view.findViewById(R.id.overallpnl);
+        tv_funds = view.findViewById(R.id.tv_funds);
         pnlprice = new ArrayList<>();
         g_investment_value = new ArrayList<>();
         for(int i=0; i< stockList.size(); i++)
@@ -72,6 +84,7 @@ public class PortfolioSection extends Fragment {
             g_investment_value.add(i, 0.00);
         }
 
+        tv_funds.setText("₹"+String.format(Locale.ENGLISH, "%,.2f",localStorage.getFundsvalue()));
         for(int i=0; i < stockList.size(); i++)
             makeApiCallPrice(stockList.get(i).getTicker(), i);
 
@@ -134,6 +147,10 @@ public class PortfolioSection extends Fragment {
                      g_total_value = calculateFromArrayList(g_investment_value);
                      total_invested.setText("₹"+ String.format(Locale.US, "%,.2f", g_total_value));
 
+                     //Funds
+                    funds = localStorage.getFundsvalue();
+                    tv_funds.setText(String.format(Locale.ENGLISH, "%,.2f", funds));
+
                      //Realtime P&L
                     double pnl = qty * (number_lastprice.doubleValue() - number_buyprice.doubleValue());
                     pnlprice.set(position, pnl);
@@ -144,9 +161,21 @@ public class PortfolioSection extends Fragment {
                     current_value.setText("₹"+String.format(Locale.ENGLISH, "%,.2f",g_current_vlaue));
 
                     if(g_pnl < 0)
+                    {
                         tvpnl.setTextColor(requireContext().getResources().getColor(R.color.red_stock));
+                        g_total_returns = (g_pnl/g_total_value)*100;
+                        tv_total_return.setTextColor(requireContext().getResources().getColor(R.color.red_stock));
+                        tv_total_return.setText(String.format("%.2f", g_total_returns)+ "%");
+
+                    }
                     else
+                    {
                         tvpnl.setTextColor(requireContext().getResources().getColor(R.color.green_stock));
+                        g_total_returns = (g_pnl/g_total_value)*100;
+                        tv_total_return.setTextColor(requireContext().getResources().getColor(R.color.green_stock));
+                        tv_total_return.setText("+"+ String.format("%.2f", g_total_returns)+ "%");
+
+                    }
                     tvpnl.setText(String.format(Locale.ENGLISH, "%,.2f",g_pnl));
                     stockList.get(position).setTickerPnL(String.format("%.2f", pnl));
                     stockList.get(position).setTickerPriceLTP(lastprice);
@@ -167,18 +196,7 @@ public class PortfolioSection extends Fragment {
         });
 
     }
-    public int getPositionOfScrip(String ticker , List<PortfolioStock> stockList)
-    {
-        if(stockList.size() ==1)
-            return 0;
 
-        for(int i=0; i < stockList.size(); i++)
-        {
-            if(stockList.get(i).getTicker().equals(ticker))
-                return i;
-        }
-        return 0;
-    }
     public void updateGUI()
     {
         for(int i=0; i < stockList.size(); i++)
@@ -192,4 +210,5 @@ public class PortfolioSection extends Fragment {
             pnl = pnl + stockpnl.get(i);
         return pnl;
     }
+
 }

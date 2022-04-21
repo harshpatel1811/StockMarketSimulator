@@ -18,6 +18,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -80,6 +81,7 @@ public class DetailsActivity extends AppCompatActivity {
         tv52weeklow = findViewById(R.id.tv_52weeklow);
        // ivstarblank = findViewById(R.id.ivstartblank);
         toggleButton = findViewById(R.id.toggleButton);
+
 
 
         File file = new File("/data/data/com.harsh.stockmarkettests/shared_prefs/Stocks.xml");
@@ -205,14 +207,13 @@ public class DetailsActivity extends AppCompatActivity {
                     }
 
 
-                    tvprevclose.setText(prevClose);
-
-                    tvmarketcap.setText(marketcap);
+                    tvprevclose.setText("₹"+prevClose);
+                    tvmarketcap.setText(marketcap+" Cr");
                     tvvolume.setText(volume);
-                    tvhigh.setText(high);
-                    tvlow.setText(low);
-                    tv52weekhigh.setText(high52week);
-                    tv52weeklow.setText(low52week);
+                    tvhigh.setText("₹"+high);
+                    tvlow.setText("₹"+low);
+                    tv52weekhigh.setText("₹"+high52week);
+                    tv52weeklow.setText("₹"+low52week);
                     progressBar.setVisibility(View.GONE);
                     nestedScrollView.setVisibility(View.VISIBLE);
 

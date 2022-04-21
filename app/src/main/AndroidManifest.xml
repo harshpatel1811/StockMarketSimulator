@@ -12,9 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StockMarketTests">
         <activity
-            android:name=".DetailsActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".ui.Portfolio.bottom_sheet_portfolio"
             android:exported="false" />
+        <activity
+            android:name=".DetailsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity2"
             android:exported="true"
