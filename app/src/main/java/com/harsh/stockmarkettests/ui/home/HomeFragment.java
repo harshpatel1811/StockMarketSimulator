@@ -232,7 +232,6 @@ public class HomeFragment extends Fragment {
         handler = new Handler( msg -> {
             if (msg.what == TRIGGER_AUTO_COMPLETE) {
 
-                //TODO:- As our Price api is not returning name of Stock so we have to get that name from Search api and pass to Details.java activity
                 String input = mSearchAutoComplete.getText().toString();
 
                 if (!TextUtils.isEmpty(mSearchAutoComplete.getText()) && input.length() >= 3) {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Market Simualator</string>
+    <string name="app_name">Market Simulator</string>
     <string name="fetch">Fetch</string>
 
     <string name="title_activity_main2">MainActivity2</string>
