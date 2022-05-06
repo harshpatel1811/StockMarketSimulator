@@ -1,5 +1,7 @@
 package com.harsh.stockmarkettests;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentManager;
@@ -26,7 +28,13 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.android.volley.Response;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.harsh.stockmarkettests.ui.home.HomeFragment;
 
 import org.json.JSONArray;
@@ -34,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -251,12 +261,11 @@ public class DetailsActivity extends AppCompatActivity {
 
     public void addToWatchlist(String ticker)
     {
-        Toast.makeText(this, "Running", Toast.LENGTH_SHORT).show();
-
      //  localstorage = getSharedPreferences("Stocks", Context.MODE_PRIVATE);
        SharedPreferences.Editor editor = localstorage.edit();
        String data = localstorage.getString("WATCHLIST", null);
-
+       String val = FirebaseHandler.mAuth.getUid();
+       DatabaseReference myRef = FirebaseHandler.myDatabase.getReference("Users").child(val);
        if(data != null)
        {
            try {
@@ -264,8 +273,16 @@ public class DetailsActivity extends AppCompatActivity {
                jsonArray.put(ticker);
                editor.putString("WATCHLIST", jsonArray.toString());
                editor.apply();
-               //
-               // Toast.makeText(this, "Data added", Toast.LENGTH_SHORT).show();
+               //Adding Data to FireBase
+               HashMap map = new HashMap();
+               map.put("watchlist", jsonArray.toString());
+               myRef.updateChildren(map, new DatabaseReference.CompletionListener() {
+                   @Override
+                   public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                       Toast.makeText(DetailsActivity.this, "Data changed Succesfully", Toast.LENGTH_SHORT).show();
+                   }
+               });
+
            } catch (JSONException e) {
                Log.d("WATCHLIST", "addToWatchlist: "+ e.toString());
                e.printStackTrace();
@@ -279,6 +296,8 @@ public class DetailsActivity extends AppCompatActivity {
     public void removeFromWatchlist(String ticker) {
         SharedPreferences.Editor editor = localstorage.edit();
         String data = localstorage.getString("WATCHLIST", null);
+        String val = FirebaseHandler.mAuth.getUid();
+        DatabaseReference myRef = FirebaseHandler.myDatabase.getReference("Users").child(val);
         if(data!= null)
         {
             JSONArray jsonArray = null;
@@ -291,8 +310,18 @@ public class DetailsActivity extends AppCompatActivity {
                         jsonArray.remove(i);
                         editor.putString("WATCHLIST", jsonArray.toString());
                         editor.apply();
+                        HashMap map = new HashMap();
+                        map.put("watchlist", jsonArray.toString());
+                        myRef.updateChildren(map, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                Toast.makeText(DetailsActivity.this, "Data changed Succesfully", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

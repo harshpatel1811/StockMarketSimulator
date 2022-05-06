@@ -47,6 +47,7 @@ public class DashboardFragment extends Fragment {
         setHasOptionsMenu(true);
         TabLayout tabLayout = root.findViewById(R.id.tabLayout);
         viewPager2 = root.findViewById(R.id.viewpager2);
+
         viewPager2.setAdapter(new ViewPageAdapter(this));
         new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
@@ -72,7 +73,5 @@ public class DashboardFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
-
 
 }

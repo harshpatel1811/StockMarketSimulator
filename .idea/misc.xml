@@ -7,6 +7,7 @@
         <entry key="../../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_dropdown_item_1line.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/custom_border_portfoliosection.xml" value="0.21213836669921876" />
+        <entry key="app/src/main/res/drawable/custom_edittext.xml" value="0.1995" />
         <entry key="app/src/main/res/drawable/custom_seekbar.xml" value="0.149" />
         <entry key="app/src/main/res/drawable/custom_tradebutton.xml" value="0.251" />
         <entry key="app/src/main/res/drawable/customborder.xml" value="0.251" />
@@ -24,20 +25,22 @@
         <entry key="app/src/main/res/layout-v31/fragment_notifications.xml" value="0.2956924438476563" />
         <entry key="app/src/main/res/layout/activity_bottom_sheet_portfolio.xml" value="0.2543822146216332" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.36385498046875003" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.8380330403645835" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1900395711263021" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.4210235595703125" />
         <entry key="app/src/main/res/layout/fragment_bottom_sheet_portfolio.xml" value="0.37528322427579663" />
         <entry key="app/src/main/res/layout/fragment_bottom_sheet_trade.xml" value="0.45670460231694576" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.31576354878403273" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3259160359700521" />
-        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.5031578947368421" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.3660537719726563" />
         <entry key="app/src/main/res/layout/fragment_top_losers.xml" value="0.20436083796494228" />
         <entry key="app/src/main/res/layout/fragment_top_movers.xml" value="0.2504851055430673" />
-        <entry key="app/src/main/res/layout/itemlist.xml" value="0.6639851888020833" />
+        <entry key="app/src/main/res/layout/itemlist.xml" value="0.35175679524739584" />
         <entry key="app/src/main/res/layout/itemlist_portfolio.xml" value="0.36165618896484375" />
         <entry key="app/src/main/res/layout/row.xml" value="0.48511116383081004" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/menu/movers_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/logout_menu.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/menu/movers_menu.xml" value="0.5001800537109375" />
         <entry key="app/src/main/res/menu/search_menu.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />

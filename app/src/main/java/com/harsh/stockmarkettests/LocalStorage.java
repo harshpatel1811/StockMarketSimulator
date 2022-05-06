@@ -4,8 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.gms.common.util.SharedPreferencesUtils;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.harsh.stockmarkettests.ui.Portfolio.PortfolioSection;
 import com.harsh.stockmarkettests.ui.dashboard.MoversRecyclerAdapter;
 
@@ -16,8 +21,10 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class LocalStorage {
 
@@ -121,8 +128,13 @@ public class LocalStorage {
         List<PortfolioStock> stockList = new ArrayList<>();
         if(isPortfolioFileExist())
         {
+            //SharedPreference
             SharedPreferences sharedPreferences = context.getSharedPreferences("Portfolio", Context.MODE_PRIVATE);
             String str = sharedPreferences.getString("Stocks", null);
+
+            //Firebase
+            String val = FirebaseHandler.mAuth.getUid();
+            DatabaseReference myRef = FirebaseHandler.myDatabase.getReference("Users").child(val);
 
             try {
                 JSONArray jsonArray = new JSONArray(str);
@@ -138,7 +150,17 @@ public class LocalStorage {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            HashMap map = new HashMap();
+            map.put("holdings", str);
+            myRef.updateChildren(map, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                    Toast.makeText(context, "Data changed", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
+
             return stockList;
     }
 
@@ -398,4 +420,5 @@ public class LocalStorage {
         }
        return 0;
     }
+
 }

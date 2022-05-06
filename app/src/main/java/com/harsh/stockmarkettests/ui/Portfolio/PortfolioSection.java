@@ -1,11 +1,16 @@
 package com.harsh.stockmarkettests.ui.Portfolio;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,8 +27,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.util.SharedPreferencesUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
 import com.harsh.stockmarkettests.ApiCall;
+import com.harsh.stockmarkettests.FirebaseHandler;
 import com.harsh.stockmarkettests.LocalStorage;
+import com.harsh.stockmarkettests.LoginActivity;
+import com.harsh.stockmarkettests.MainActivity2;
 import com.harsh.stockmarkettests.PortfolioRecyclerAdapter;
 import com.harsh.stockmarkettests.PortfolioStock;
 import com.harsh.stockmarkettests.R;
@@ -44,7 +53,7 @@ import java.util.TimerTask;
 
 public class PortfolioSection extends Fragment {
     public static final String PRICE_URL = "https://money.rediff.com/money1/currentstatus.php?companycode=";
-    public static final int AUTO_REFRESH_PERIOD_MSEC = 10000;
+    public static final int AUTO_REFRESH_PERIOD_MSEC = 5000;
     public static TextView current_value, total_invested, tvpnl, tv_total_return, tv_funds;
     public static List<PortfolioStock> stockList;
     RecyclerView recyclerView;
@@ -60,6 +69,7 @@ public class PortfolioSection extends Fragment {
     SharedPreferences.OnSharedPreferenceChangeListener listener;
     public static float funds = 0;
     public static Timer timer;
+    Activity activity;
 
     private FragmentNotificationsBinding binding;
 
@@ -68,6 +78,7 @@ public class PortfolioSection extends Fragment {
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        setHasOptionsMenu(true);
         total_invested  = view.findViewById(R.id.totalinvestment);
         current_value = view.findViewById(R.id.currentvalue);
         tv_total_return =view.findViewById(R.id.tv_total_return);
@@ -76,6 +87,7 @@ public class PortfolioSection extends Fragment {
         stockList = localStorage.getPortfolioStocks();
         tvpnl = view.findViewById(R.id.overallpnl);
         tv_funds = view.findViewById(R.id.tv_funds);
+        activity = getActivity();
         pnlprice = new ArrayList<>();
         g_investment_value = new ArrayList<>();
         for(int i=0; i< stockList.size(); i++)
@@ -209,6 +221,23 @@ public class PortfolioSection extends Fragment {
         for(int i=0; i < stockpnl.size(); i++)
             pnl = pnl + stockpnl.get(i);
         return pnl;
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.logout_menu,menu);
+        MenuItem menuItem = menu.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                FirebaseHandler.mAuth.signOut();
+                startActivity(new Intent(getContext(), LoginActivity.class));
+                activity.finish();
+                return false;
+            }
+        });
+
     }
 
 }

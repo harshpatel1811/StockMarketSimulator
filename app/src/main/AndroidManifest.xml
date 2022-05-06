@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StockMarketTests">
         <activity
+            android:name=".LoginActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <activity
             android:name=".ui.Portfolio.bottom_sheet_portfolio"
             android:exported="false" />
         <activity
@@ -20,17 +29,14 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity2"
-            android:exported="true"
-            android:label="@string/title_activity_main2">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
